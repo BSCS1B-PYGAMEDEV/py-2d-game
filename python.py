@@ -22,11 +22,11 @@ clock = pygame.time.Clock()
 # Player settings
 player_width = 50
 player_height = 100
-player_x = SCREEN_WIDTH // 2 - player_width // 2
-player_y = SCREEN_HEIGHT - player_height - 100
+player_x = SCREEN_WIDTH // 25 - player_width // 2
+player_y = 800 - player_height - 100
 player_velocity = 5
 jumping = False
-jump_count = 10
+jump_count = 20  # Increased jump count for higher jumps
 
 # Load assets
 player_image = pygame.Surface((player_width, player_height))
@@ -40,22 +40,27 @@ stairs = [
     pygame.Rect(400, SCREEN_HEIGHT - ground_height - 50, 400, 50),
     pygame.Rect(500, SCREEN_HEIGHT - ground_height - 100, 300, 50),
     pygame.Rect(600, SCREEN_HEIGHT - ground_height - 150, 200, 50),
-    pygame.Rect(700, SCREEN_HEIGHT - ground_height - 200, 100, 50)
 ]
 
-# Jumping function
+# Define gravity constant
+GRAVITY = 3
+
+# simple gravity and jumping mechanics
 def handle_jumping():
-    global player_y, jumping, jump_count
+    global player_y, jump_count, jumping
+
     if jumping:
         if jump_count >= -10:
-            neg = 0.5
+            neg = 1
             if jump_count < 0:
-                neg = -0.5
+                neg = -1
             player_y -= (jump_count ** 2) * 0.5 * neg
             jump_count -= 1
         else:
             jumping = False
             jump_count = 10
+    else:
+        player_y += GRAVITY
 
 # Main game loop
 def main():
@@ -76,6 +81,10 @@ def main():
         if keys[pygame.K_LEFT]:
             player_x -= player_velocity
         if keys[pygame.K_RIGHT]:
+            player_x += player_velocity
+        if keys[pygame.K_a]:
+            player_x -= player_velocity
+        if keys[pygame.K_d]:
             player_x += player_velocity
         if not jumping and keys[pygame.K_SPACE]:
             jumping = True
