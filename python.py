@@ -11,9 +11,9 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("game Prototype")
 
 # Colors
-WHITE = (0, 0, 0)
-BLACK = (255, 255, 255)
-RED = (0, 0, 255)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 # FPS
 FPS = 60
@@ -35,6 +35,14 @@ player_image.fill(RED)  # Placeholder red rectangle as the player sprite
 # Ground settings
 ground_height = 50
 
+# Define stair steps
+stairs = [
+    pygame.Rect(400, SCREEN_HEIGHT - ground_height - 50, 400, 50),
+    pygame.Rect(500, SCREEN_HEIGHT - ground_height - 100, 300, 50),
+    pygame.Rect(600, SCREEN_HEIGHT - ground_height - 150, 200, 50),
+    pygame.Rect(700, SCREEN_HEIGHT - ground_height - 200, 100, 50)
+]
+
 # Jumping function
 def handle_jumping():
     global player_y, jumping, jump_count
@@ -47,7 +55,7 @@ def handle_jumping():
             jump_count -= 1
         else:
             jumping = False
-            jump_count = 5
+            jump_count = 10
 
 # Main game loop
 def main():
@@ -81,20 +89,29 @@ def main():
         # Handle jumping mechanics
         handle_jumping()
 
-        # Platform collision (simple ground collision)
         if player_y >= SCREEN_HEIGHT - player_height - ground_height:
             player_y = SCREEN_HEIGHT - player_height - ground_height
             jumping = False
             jump_count = 10
+
+        # Check for collisions with stairs
+        player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
+        for step in stairs:
+            if player_rect.colliderect(step) and player_y + player_height <= step.y + player_velocity:
+                player_y = step.y - player_height
+                jumping = False
+                jump_count = 10
 
         # Draw the player
         screen.blit(player_image, (player_x, player_y))
 
         # Draw ground
         pygame.draw.rect(screen, WHITE, (0, SCREEN_HEIGHT - ground_height, SCREEN_WIDTH, ground_height))
-        pygame.draw.rect(screen, WHITE, (0, 50 - 100, 50, ground_height))
 
-        
+        # Draw stairs
+        for step in stairs:
+            pygame.draw.rect(screen, WHITE, step)
+
         # Update the screen
         pygame.display.update()
 
