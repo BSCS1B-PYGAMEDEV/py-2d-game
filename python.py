@@ -26,11 +26,11 @@ player_x = SCREEN_WIDTH // 25 - player_width // 2
 player_y = 800 - player_height - 100
 player_velocity = 5
 jumping = False
-jump_count = 20  # Increased jump count for higher jumps
+jump_count = 5
 
 # Load assets
 player_image = pygame.Surface((player_width, player_height))
-player_image.fill(RED)  # Placeholder red rectangle as the player sprite
+player_image.fill(RED)  
 
 # Ground settings
 ground_height = 50
@@ -42,23 +42,22 @@ stairs = [
     pygame.Rect(600, SCREEN_HEIGHT - ground_height - 150, 200, 50),
 ]
 
-# Define gravity constant
-GRAVITY = 3
+GRAVITY = 5
 
-# simple gravity and jumping mechanics
+
 def handle_jumping():
     global player_y, jump_count, jumping
 
     if jumping:
         if jump_count >= -10:
-            neg = 1
+            neg = 0.5
             if jump_count < 0:
-                neg = -1
+                neg = -0.5
             player_y -= (jump_count ** 2) * 0.5 * neg
             jump_count -= 1
         else:
             jumping = False
-            jump_count = 10
+            jump_count = 5
     else:
         player_y += GRAVITY
 
